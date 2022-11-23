@@ -10,13 +10,18 @@ namespace Calculadora
     internal class Calculadora : CalculadoraBaseVisitor<int>
     {
         Dictionary<string, int> variables = new Dictionary<string, int>();
+        List<string> output = new List<string>();
+
+        public List<string> Output { get { return output; } }
+        public Dictionary<string, int> Variables { get { return variables; } }
+
 
         public override int VisitAsignacion([NotNull] CalculadoraParser.AsignacionContext context)//
         {
             int expr = Visit(context.expresion());
             string variable = context.ID().GetText();
             variables[variable] = expr;
-            Console.WriteLine($"{variable} <= {expr}");
+            output.Add($"{variable} <= {expr}");
             return 0;
         }
 
@@ -25,7 +30,7 @@ namespace Calculadora
             if (context.expresion() != null)
             {
                 int expr = Visit(context.expresion());
-                Console.WriteLine(expr);
+                output.Add(expr.ToString());
                 return expr;
             }
             else //context.asignacion() != null

@@ -28,7 +28,6 @@ string getInput()
 
 IParseTree parse(string input)
 {
-    Console.WriteLine("Iniciando Cálculo:");
     ImmediateErrorListener errListener = ImmediateErrorListener.Instance;
     var inputStream = CharStreams.fromString(input);
     var lexer = new CalculadoraLexer(inputStream);
@@ -69,3 +68,17 @@ do
 
 var calculadora = new Calculadora.Calculadora();
 calculadora.Visit(tree);
+Console.WriteLine("Output:");
+int n = 0;
+foreach (string line in calculadora.Output)
+{
+    n++;
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.Write($"{n}:   ");
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine(line);
+    Console.ResetColor();
+}
+
+Console.WriteLine("Presione cualquier tecla para finalizar...");
+Console.ReadKey();

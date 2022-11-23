@@ -9,9 +9,16 @@ namespace Calculadora
 {
     internal class ImmediateErrorListener : BaseErrorListener
     {
+        static Lazy<ImmediateErrorListener> instance = new Lazy<ImmediateErrorListener>(() => new ImmediateErrorListener());
+
+        public static ImmediateErrorListener Instance
+        {
+            get { return instance.Value; }
+        }
+
         public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
-            //throw new ParseCancellationException("line " + line + ":" + charPositionInLine + " " + msg);
+            throw new Antlr4.Runtime.Misc.ParseCanceledException($"Error en la línea {line} columna {charPositionInLine}: {msg}");
         }
     }
 }

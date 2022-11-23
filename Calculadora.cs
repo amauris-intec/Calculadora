@@ -16,7 +16,7 @@ namespace Calculadora
         public Dictionary<string, float> Variables { get { return variables; } }
 
 
-        public override float VisitAsignacion([NotNull] CalculadoraParser.AsignacionContext context)//
+        public override float VisitAsignacion([NotNull] CalculadoraParser.AsignacionContext context)
         {
             float expr = Visit(context.expresion());
             string variable = context.ID().GetText();
@@ -25,7 +25,7 @@ namespace Calculadora
             return 0;
         }
 
-        public override float VisitComando([NotNull] CalculadoraParser.ComandoContext context)//
+        public override float VisitComando([NotNull] CalculadoraParser.ComandoContext context)
         {
             if (context.expresion() != null)
             {
@@ -41,17 +41,17 @@ namespace Calculadora
             
         }
 
-        public override float VisitFactorSolo([NotNull] CalculadoraParser.FactorSoloContext context)//
+        public override float VisitFactorSolo([NotNull] CalculadoraParser.FactorSoloContext context)
         {
             return Visit(context.factor());
         }
 
-        public override float VisitIdentificador([NotNull] CalculadoraParser.IdentificadorContext context)//
+        public override float VisitIdentificador([NotNull] CalculadoraParser.IdentificadorContext context)
         {
             return variables[context.ID().GetText()];
         }
 
-        public override float VisitMulODiv([NotNull] CalculadoraParser.MulODivContext context)//
+        public override float VisitMulODiv([NotNull] CalculadoraParser.MulODivContext context)
         {
             if (context.op.Type == CalculadoraParser.MUL)
                 return Visit(context.termino()) * Visit(context.factor());
@@ -59,22 +59,23 @@ namespace Calculadora
                 return Visit(context.termino()) / Visit(context.factor());
         }
 
-        public override float VisitNumero([NotNull] CalculadoraParser.NumeroContext context)//
+        public override float VisitNumero([NotNull] CalculadoraParser.NumeroContext context)
         {
             return float.Parse(context.NUM().GetText());
         }
 
         public override float VisitScript([NotNull] CalculadoraParser.ScriptContext context)
         {
-            return base.VisitScript(context);
+            base.VisitScript(context);
+            return 0;
         }
 
-        public override float VisitSubexpresion([NotNull] CalculadoraParser.SubexpresionContext context)//
+        public override float VisitSubexpresion([NotNull] CalculadoraParser.SubexpresionContext context)
         {
             return Visit(context.expresion());
         }
 
-        public override float VisitSumORes([NotNull] CalculadoraParser.SumOResContext context)//
+        public override float VisitSumORes([NotNull] CalculadoraParser.SumOResContext context)
         {
             if (context.op.Type == CalculadoraParser.SUM)
                 return Visit(context.expresion()) + Visit(context.termino());
@@ -82,7 +83,7 @@ namespace Calculadora
                 return Visit(context.expresion()) - Visit(context.termino());
         }
 
-        public override float VisitTerminoSolo([NotNull] CalculadoraParser.TerminoSoloContext context)//
+        public override float VisitTerminoSolo([NotNull] CalculadoraParser.TerminoSoloContext context)
         {
             return Visit(context.termino());
         }

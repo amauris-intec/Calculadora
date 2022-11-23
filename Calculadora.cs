@@ -7,25 +7,30 @@ using System.Threading.Tasks;
 
 namespace Calculadora
 {
-    internal class Calculadora : CalculadoraBaseVisitor<int>
+    internal class Calculadora : CalculadoraBaseVisitor<float>
     {
-        Dictionary<string, int> variables = new Dictionary<string, int>();
+        Dictionary<string, float> variables = new Dictionary<string, float>();
+        List<string> output = new List<string>();
 
-        public override int VisitAsignacion([NotNull] CalculadoraParser.AsignacionContext context)//
+        public List<string> Output { get { return output; } }
+        public Dictionary<string, float> Variables { get { return variables; } }
+
+
+        public override float VisitAsignacion([NotNull] CalculadoraParser.AsignacionContext context)
         {
-            int expr = Visit(context.expresion());
+            float expr = Visit(context.expresion());
             string variable = context.ID().GetText();
             variables[variable] = expr;
-            Console.WriteLine($"{variable} <= {expr}");
+            output.Add($"{variable} <= {expr}");
             return 0;
         }
 
-        public override int VisitComando([NotNull] CalculadoraParser.ComandoContext context)//
+        public override float VisitComando([NotNull] CalculadoraParser.ComandoContext context)
         {
             if (context.expresion() != null)
             {
-                int expr = Visit(context.expresion());
-                Console.WriteLine(expr);
+                float expr = Visit(context.expresion());
+                output.Add(expr.ToString());
                 return expr;
             }
             else //context.asignacion() != null
@@ -36,17 +41,17 @@ namespace Calculadora
             
         }
 
-        public override int VisitFactorSolo([NotNull] CalculadoraParser.FactorSoloContext context)//
+        public override float VisitFactorSolo([NotNull] CalculadoraParser.FactorSoloContext context)
         {
             return Visit(context.factor());
         }
 
-        public override int VisitIdentificador([NotNull] CalculadoraParser.IdentificadorContext context)//
+        public override float VisitIdentificador([NotNull] CalculadoraParser.IdentificadorContext context)
         {
             return variables[context.ID().GetText()];
         }
 
-        public override int VisitMulODiv([NotNull] CalculadoraParser.MulODivContext context)//
+        public override float VisitMulODiv([NotNull] CalculadoraParser.MulODivContext context)
         {
             if (context.op.Type == CalculadoraParser.MUL)
                 return Visit(context.termino()) * Visit(context.factor());
@@ -54,22 +59,23 @@ namespace Calculadora
                 return Visit(context.termino()) / Visit(context.factor());
         }
 
-        public override int VisitNumero([NotNull] CalculadoraParser.NumeroContext context)//
+        public override float VisitNumero([NotNull] CalculadoraParser.NumeroContext context)
         {
-            return int.Parse(context.NUM().GetText());
+            return float.Parse(context.NUM().GetText());
         }
 
-        public override int VisitScript([NotNull] CalculadoraParser.ScriptContext context)
+        public override float VisitScript([NotNull] CalculadoraParser.ScriptContext context)
         {
-            return base.VisitScript(context);
+            base.VisitScript(context);
+            return 0;
         }
 
-        public override int VisitSubexpresion([NotNull] CalculadoraParser.SubexpresionContext context)//
+        public override float VisitSubexpresion([NotNull] CalculadoraParser.SubexpresionContext context)
         {
             return Visit(context.expresion());
         }
 
-        public override int VisitSumORes([NotNull] CalculadoraParser.SumOResContext context)//
+        public override float VisitSumORes([NotNull] CalculadoraParser.SumOResContext context)
         {
             if (context.op.Type == CalculadoraParser.SUM)
                 return Visit(context.expresion()) + Visit(context.termino());
@@ -77,7 +83,7 @@ namespace Calculadora
                 return Visit(context.expresion()) - Visit(context.termino());
         }
 
-        public override int VisitTerminoSolo([NotNull] CalculadoraParser.TerminoSoloContext context)//
+        public override float VisitTerminoSolo([NotNull] CalculadoraParser.TerminoSoloContext context)
         {
             return Visit(context.termino());
         }

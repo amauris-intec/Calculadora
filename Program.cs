@@ -68,6 +68,7 @@ do
 
 var calculadora = new Calculadora.Calculadora();
 calculadora.Visit(tree);
+
 Console.WriteLine("Output:");
 int n = 0;
 foreach (string line in calculadora.Output)
